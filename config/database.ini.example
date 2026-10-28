@@ -1,0 +1,9 @@
+; Modèle de configuration de la base de données.
+; Copier ce fichier en database.ini, puis mettre les vraies valeurs.
+; database.ini ne va JAMAIS dans Git.
+
+host = "mariadb"
+port = 3306
+database = "my_database"
+username = "username"
+password = "password"
