@@ -90,13 +90,10 @@ comme mascotte. C'est un clin d'œil au film _Ratatouille_.
 ## Utilisation de l'IA
 
 Nous avons utilisé **Claude Code (Anthropic)** pour :
-- nous aider à nous souvenir comment créer le MCD, le MLD et le MPD de la base de données en demandant des explications sur des notions pas vu ou oublié ;
+- nous aider à nous souvenir comment créer le MLD et le MPD de la base de données en demandant des explications sur des notions pas vu ou oublié ;
 - aider à écrire les scripts SQL du dossier `src/db/` surtout pour les données de test et les requêtes de test.
 
 Ce qui a été généré par l'IA a été testé, vérifié et corrigé par le groupe.
-
-Nous avons  testé et compris tout ce qui a été généré, et nous l'avons corrigé quand c'était nécessaire.
-
 
 ## Bilan de fin de projet
 
