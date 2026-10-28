@@ -1,5 +1,7 @@
 # HEIG-VD ProgServ2 Course PHP Template
 
+Notre site est disponible sur : https://ratsdufrigo.thenox.ch
+
 Ce modèle de projet est conçu pour les étudiant.es du cours
 [_"Programmation Serveur 2 (ProgServ2)"_](https://github.com/heig-vd-progserv-course/heig-vd-progserv2-course)
 à la [HEIG-VD](https://heig-vd.ch).
