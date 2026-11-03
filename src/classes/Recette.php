@@ -2,35 +2,35 @@
 
 class Recette {
     private ?int $id;
-    private string $title;
-    private ?string $note;
-    private ?string $link;
-    private ?int $duration;
-    private ?int $person;
-    private ?int $difficulty;
-    private ?string $creation;
-    private int $idUser;
+    private string $titre;
+    private ?string $notes;
+    private ?string $lien;
+    private ?int $tempsPreparation;
+    private ?int $nbPersonnes;
+    private ?int $idDifficulte;
+    private ?string $dateCreation;
+    private int $idUtilisateur;
     private array $ingredients = [];
 
     public function __construct(
-        string $title,
-        int $idUser,
-        ?string $note = null, //proposition de l'IA "= null" --> sans ça, tout est obligatoire
-        ?string $link = null,
-        ?int $duration = null,
-        ?int $person = null,
-        ?int $difficulty = null,
-        ?string $creation = null,
+        string $titre,
+        int $idUtilisateur,
+        ?string $notes = null, //proposition de l'IA "= null" --> sans ça, tout est obligatoire
+        ?string $lien = null,
+        ?int $tempsPreparation = null,
+        ?int $nbPersonnes = null,
+        ?int $idDifficulte = null,
+        ?string $dateCreation = null,
         ?int $id = null
     ) {
-        $this->title = $title;
-        $this->idUser = $idUser;
-        $this->note = $note;
-        $this->link = $link;
-        $this->duration = $duration;
-        $this->person = $person;
-        $this->difficulty = $difficulty;
-        $this->creation = $creation;
+        $this->titre = $titre;
+        $this->idUtilisateur = $idUtilisateur;
+        $this->notes = $notes;
+        $this->lien = $lien;
+        $this->tempsPreparation = $tempsPreparation;
+        $this->nbPersonnes = $nbPersonnes;
+        $this->idDifficulte = $idDifficulte;
+        $this->dateCreation = $dateCreation;
         $this->id = $id;
     }
 
@@ -39,29 +39,29 @@ class Recette {
     public function getId(): ?int {
         return $this->id;
     }
-    public function getTitle(): string {
-        return $this->title;
+    public function getTitre(): string {
+        return $this->titre;
     }
-    public function getNote(): ?string {
-        return $this->note;
+    public function getNotes(): ?string {
+        return $this->notes;
     }
-    public function getLink(): ?string {
-        return $this->link;
+    public function getLien(): ?string {
+        return $this->lien;
     }
-    public function getDuration(): ?int {
-        return $this->duration;
+    public function getTempsPreparation(): ?int {
+        return $this->tempsPreparation;
     }
-    public function getPerson(): ?int {
-        return $this->person;
+    public function getNbPersonnes(): ?int {
+        return $this->nbPersonnes;
     }
-    public function getDifficulty(): ?int {
-        return $this->difficulty;
+    public function getIdDifficulte(): ?int {
+        return $this->idDifficulte;
     }
-    public function getCreation(): ?string {
-        return $this->creation;
+    public function getDateCreation(): ?string {
+        return $this->dateCreation;
     }
-    public function getIdUser(): int {
-        return $this->idUser;
+    public function getIdUtilisateur(): int {
+        return $this->idUtilisateur;
     }
     public function getIngredients(): array {
         return $this->ingredients;
@@ -70,23 +70,23 @@ class Recette {
     //----------------------------- SETTERS -----------------------------
     //On en met seulement sur les éléments qui peuvent potentiellement changer après la création
 
-    public function setTitle(string $title): void {
-        $this->title = $title;
+    public function setTitre(string $titre): void {
+        $this->titre = $titre;
     }
-    public function setNote(?string $note): void {
-        $this->note = $note;
+    public function setNotes(?string $notes): void {
+        $this->notes = $notes;
     }
-    public function setLink(?string $link): void {
-        $this->link = $link;
+    public function setLien(?string $lien): void {
+        $this->lien = $lien;
     }
-    public function setDuration(?int $duration): void {
-        $this->duration = $duration;
+    public function setTempsPreparation(?int $tempsPreparation): void {
+        $this->tempsPreparation = $tempsPreparation;
     }
-    public function setPerson(?int $person): void {
-        $this->person = $person;
+    public function setNbPersonnes(?int $nbPersonnes): void {
+        $this->nbPersonnes = $nbPersonnes;
     }
-    public function setDifficulty(?int $difficulty): void {
-        $this->difficulty = $difficulty;
+    public function setIdDifficulte(?int $idDifficulte): void {
+        $this->idDifficulte = $idDifficulte;
     }
     public function setIngredients(array $ingredients): void {
         $this->ingredients = $ingredients;
@@ -94,69 +94,69 @@ class Recette {
 
     //----------------------------- VALIDATION -----------------------------
 
-    public function validate(): array {
-        $errors = [];
+    public function valider(): array {
+        $erreurs = [];
 
         //titre
-        $title = trim($this->title);
-        if ($title === '') {
-            $errors[] = "Le titre est obligatoire.";
-        } elseif (mb_strlen($title) > 50) {
-            $errors[] = "Le titre ne peut pas dépasser 50 caractères.";
+        $titre = trim($this->titre);
+        if ($titre === '') {
+            $erreurs[] = "Le titre est obligatoire.";
+        } elseif (mb_strlen($titre) > 50) {
+            $erreurs[] = "Le titre ne peut pas dépasser 50 caractères.";
         }
 
         //note
-        $note = trim((string) $this->note); //facultatif donc on indique que la note de cette recette est transformée de toute façon en string donc null -> ''. Trim pour enlever les espaces avant et après.
-        if (mb_strlen($note) > 500) {
-            $errors[] = "Les notes ne peuvent pas dépasser 500 caractères.";
+        $notes = trim((string) $this->notes); //facultatif donc on indique que la note de cette recette est transformée de toute façon en string donc null -> ''. Trim pour enlever les espaces avant et après.
+        if (mb_strlen($notes) > 500) {
+            $erreurs[] = "Les notes ne peuvent pas dépasser 500 caractères.";
         }
 
         //lien
-        $link = trim((string) $this->link);
-        if ($link !== '') {
-            $protocole = strtolower((string) parse_url($link, PHP_URL_SCHEME)); //suggestion de l'IA. On récolte la première partie entrée dans le lien pour faire les contrôles de sécurité.
+        $lien = trim((string) $this->lien);
+        if ($lien !== '') {
+            $protocole = strtolower((string) parse_url($lien, PHP_URL_SCHEME)); //suggestion de l'IA. On récolte la première partie entrée dans le lien pour faire les contrôles de sécurité.
             //parse_url coupe le lien pour récupérer 'https' et met tout en minuscule
-            if (mb_strlen($link) > 2048) {
-                $errors[] = "Le lien ne peut pas dépasser 2048 caractères.";
+            if (mb_strlen($lien) > 2048) {
+                $erreurs[] = "Le lien ne peut pas dépasser 2048 caractères.";
             } elseif (!in_array($protocole, ['http', 'https'], true)) { //si il n'y a pas http ou https dans le lien...
-                $errors[] = "Le lien doit commencer par http:// ou https://.";
+                $erreurs[] = "Le lien doit commencer par http:// ou https://.";
             }
         }
 
         //règle spéciale : il faut au moins un lien OU une note.
-        if ($note === '' && $link === '') {
-            $errors[] = "Indiquez au moins des notes ou un lien.";
+        if ($notes === '' && $lien === '') {
+            $erreurs[] = "Indiquez au moins des notes ou un lien.";
         }
 
         //temps preparation
-        if ($this->duration !== null && ($this->duration < 1 || $this->duration > 9999)) {
-            $errors[] = "Durée invalide : elle doit être comprise entre 1 et 9999 minutes.";
+        if ($this->tempsPreparation !== null && ($this->tempsPreparation < 1 || $this->tempsPreparation > 9999)) {
+            $erreurs[] = "Durée invalide : elle doit être comprise entre 1 et 9999 minutes.";
         }
 
         //nombre de personnes
-        if ($this->person !== null && ($this->person < 1 || $this->person > 100)) {
-            $errors[] = "Nombre de personnes invalide : il doit être entre 1 et 100.";
+        if ($this->nbPersonnes !== null && ($this->nbPersonnes < 1 || $this->nbPersonnes > 100)) {
+            $erreurs[] = "Nombre de personnes invalide : il doit être entre 1 et 100.";
         }
 
         //difficulté
-        if ($this->difficulty !== null && !in_array($this->difficulty, [1, 2, 3], true)) {
-            $errors[] = "La difficulté choisie n'existe pas.";
+        if ($this->idDifficulte !== null && !in_array($this->idDifficulte, [1, 2, 3], true)) {
+            $erreurs[] = "La difficulté choisie n'existe pas.";
         }
 
         //ingrédients : au moins un, et pas deux fois le même. Chaque ingrédient est un tableau. On a donc un tableau de fiches d'ingrédients.
         if (count($this->ingredients) === 0) {
-            $errors[] = "Ajoutez au moins un ingrédient.";
+            $erreurs[] = "Ajoutez au moins un ingrédient.";
         }
         $dejaVus = []; //liste d'id ingrédients déjà rencontrés
         foreach ($this->ingredients as $ingredient) { //pour chaque fiche...
             $id = $ingredient['id_ingredient'];
             if (in_array($id, $dejaVus, true)) { //"num dans la liste des ingrédients déjà vu ?" Si oui...
-                $errors[] = "Un ingrédient ne peut être ajouté qu'une seule fois.";
+                $erreurs[] = "Un ingrédient ne peut être ajouté qu'une seule fois.";
                 break;
             }
             $dejaVus[] = $id; //Si ce n'est pas le cas on ajoute l'ingrédient dans la liste des déjà-vus
         }
 
-        return $errors;
+        return $erreurs;
     }
 }
