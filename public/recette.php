@@ -27,58 +27,59 @@ if ($id === null || $id === false) {
         $erreur = "Une erreur est survenue. Réessayez plus tard.";
     }
 }
+
+$titrePage = ($erreur === null) ? $recette->getTitre() : 'Recette'; // titre de l'onglet, utilisé par head.php
 ?>
 
-<!DOCTYPE html>
-<html lang="fr">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recette</title>
-</head>
+<?php require __DIR__ . '/../components/head.php'; ?>
 
 <body>
-    <?php if ($erreur !== null) { ?>
-        <p><?= htmlspecialchars($erreur) ?></p>
-    <?php } else { ?>
+    <?php require __DIR__ . '/../components/header.php'; ?>
 
-        <h1><?= htmlspecialchars($recette->getTitre()) ?></h1>
+    <main>
+        <?php if ($erreur !== null) { ?>
+            <p><?= htmlspecialchars($erreur) ?></p>
+        <?php } else { ?>
 
-        <?php if ($recette->getTempsPreparation() !== null) { ?>
-            <p>Temps : <?= (int) $recette->getTempsPreparation() ?> min</p>
-        <?php } ?>
+            <h1><?= htmlspecialchars($recette->getTitre()) ?></h1>
 
-        <?php if ($recette->getNbPersonnes() !== null) { ?>
-            <p>Pour <?= (int) $recette->getNbPersonnes() ?> personne(s)</p>
-        <?php } ?>
-
-        <?php if ($recette->getIdDifficulte() !== null) { ?>
-            <p>Difficulté : <?= htmlspecialchars(DIFFICULTES[$recette->getIdDifficulte()] ?? '') ?></p>
-        <?php } ?>
-
-        <?php if ($recette->getNotes() !== null) { ?>
-            <p><?= nl2br(htmlspecialchars($recette->getNotes())) ?></p>
-        <?php } ?>
-
-        <?php if ($recette->getLien() !== null) { ?>
-            <p><a href="<?= htmlspecialchars($recette->getLien()) ?>">Voir la recette</a></p>
-        <?php } ?>
-
-        <h2>Ingrédients</h2>
-        <ul>
-            <?php foreach ($recette->getIngredients() as $ingredient) { ?>
-                <li>
-                    <?= htmlspecialchars($ingredient['nom']) ?>
-                    <?php if ($ingredient['quantite'] !== null) { ?>
-                        : <?= htmlspecialchars($ingredient['quantite']) ?>
-                    <?php } ?>
-                </li>
+            <?php if ($recette->getTempsPreparation() !== null) { ?>
+                <p>Temps : <?= (int) $recette->getTempsPreparation() ?> min</p>
             <?php } ?>
-        </ul>
-    <?php } ?>
 
-    <p><a href="recettes.php">Voir les recettes</a></p>
+            <?php if ($recette->getNbPersonnes() !== null) { ?>
+                <p>Pour <?= (int) $recette->getNbPersonnes() ?> personne(s)</p>
+            <?php } ?>
+
+            <?php if ($recette->getIdDifficulte() !== null) { ?>
+                <p>Difficulté : <?= htmlspecialchars(DIFFICULTES[$recette->getIdDifficulte()] ?? '') ?></p>
+            <?php } ?>
+
+            <?php if ($recette->getNotes() !== null) { ?>
+                <p><?= nl2br(htmlspecialchars($recette->getNotes())) ?></p>
+            <?php } ?>
+
+            <?php if ($recette->getLien() !== null) { ?>
+                <p><a href="<?= htmlspecialchars($recette->getLien()) ?>">Voir la recette</a></p>
+            <?php } ?>
+
+            <h2>Ingrédients</h2>
+            <ul>
+                <?php foreach ($recette->getIngredients() as $ingredient) { ?>
+                    <li>
+                        <?= htmlspecialchars($ingredient['nom']) ?>
+                        <?php if ($ingredient['quantite'] !== null) { ?>
+                            : <?= htmlspecialchars($ingredient['quantite']) ?>
+                        <?php } ?>
+                    </li>
+                <?php } ?>
+            </ul>
+        <?php } ?>
+
+        <p><a href="recettes.php">Voir les recettes</a></p>
+    </main>
+
+    <?php require __DIR__ . '/../components/footer.php'; ?>
 </body>
 
 </html>

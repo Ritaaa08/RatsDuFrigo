@@ -34,10 +34,10 @@ if (!array_key_exists($rubrique, $rubriques)) {
 }
 ?>
 
-<?php require __DIR__ . '/../src/components/head.php'; ?>
+<?php require __DIR__ . '/../components/head.php'; ?>
 
 <body>
-    <?php require __DIR__ . '/../src/components/header.php'; ?>
+    <?php require __DIR__ . '/../components/header.php'; ?>
 
     <main>
         <nav>
