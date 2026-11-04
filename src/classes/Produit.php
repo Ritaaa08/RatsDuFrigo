@@ -60,4 +60,19 @@ class Produit {
         }
         return 'OK';
     }
+
+    public function valider(): array {
+        $erreurs = [];
+
+        if ($this->quantite < 1 || $this->quantite > 999) {
+            $erreurs[] = "La quantité doit être comprise entre 1 et 999.";
+        }
+
+        $date = DateTime::createFromFormat('Y-m-d', $this->datePeremption);
+        if ($date === false || $date->format('Y-m-d') !== $this->datePeremption) {
+            $erreurs[] = "La date de péremption n'est pas valide.";
+        }
+
+        return $erreurs;
+    }
 }

@@ -27,6 +27,8 @@ try {
     <main>
         <h1>Mon frigo</h1>
 
+        <p><a href="ajouter-produit.php">Ajouter un produit</a></p>
+
         <?php if ($erreur !== null) { ?>
             <p><?= htmlspecialchars($erreur) ?></p>
         <?php } elseif (count($produits) === 0) { ?>
@@ -40,6 +42,10 @@ try {
                     × <?= htmlspecialchars($produit->getQuantite()) ?>
                     — à consommer avant le <?= htmlspecialchars(date('d.m.Y', strtotime($produit->getDatePeremption()))) ?>
                     (<?= htmlspecialchars($produit->getUrgence()) ?>)
+                    <form action="supprimer-produit.php" method="POST">
+                        <input type="hidden" name="id" value="<?= htmlspecialchars($produit->getId()) ?>">
+                        <button type="submit">Supprimer</button>
+                    </form>
                 </li>
             <?php } ?>
         </ul>
