@@ -29,4 +29,31 @@ class ProduitsManager extends Manager implements ProduitsManagerInterface {
 
         return $produits;
     }
+
+    public function ajouterProduit(Produit $produit, int $idUtilisateur): int {
+        $sql = "INSERT INTO produits (quantite, date_peremption, id_utilisateur, id_ingredient, id_statut_produit)
+                VALUES (:quantite, :datePeremption, :idUtilisateur, :idIngredient, :idStatut)";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':quantite', $produit->getQuantite(), PDO::PARAM_INT);
+        $stmt->bindValue(':datePeremption', $produit->getDatePeremption());
+        $stmt->bindValue(':idUtilisateur', $idUtilisateur, PDO::PARAM_INT);
+        $stmt->bindValue(':idIngredient', $produit->getIdIngredient(), PDO::PARAM_INT);
+        $stmt->bindValue(':idStatut', Produit::STATUT_DANS_FRIGO, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return (int) $this->pdo->lastInsertId();
+    }
+
+    // id_utilisateur aussi dans le WHERE : impossible de supprimer le produit d'un autre
+    public function supprimerProduit(int $id, int $idUtilisateur): bool {
+        $sql = "DELETE FROM produits WHERE id = :id AND id_utilisateur = :idUtilisateur";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':idUtilisateur', $idUtilisateur, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->rowCount() > 0;
+    }
 }
