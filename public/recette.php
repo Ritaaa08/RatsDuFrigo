@@ -76,7 +76,8 @@ $titrePage = ($erreur === null) ? $recette->getTitre() : 'Recette'; // titre de 
             </ul>
         <?php } ?>
 
-        <p><a href="recettes.php">Voir les recettes</a></p>
+        <?php $rubriqueRetour = ($recette !== null && !$recette->getRecetteDeBase()) ? 'carnet' : 'chef'; ?>
+        <p><a href="recettes.php?rubrique=<?= $rubriqueRetour ?>">Voir les recettes</a></p>
     </main>
 
     <?php require __DIR__ . '/../components/footer.php'; ?>
