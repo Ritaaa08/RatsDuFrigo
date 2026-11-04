@@ -6,7 +6,7 @@ require_once __DIR__ . '/../interfaces/RecettesManagerInterface.php';
 
 class RecettesManager extends Manager implements RecettesManagerInterface {
 
-    //transformer ligne bdd en objet
+    //transformer ligne bdd en objet Recette
     private function creerRecette(array $ligne): Recette {
         return new Recette(
             $ligne['titre'],
@@ -25,9 +25,11 @@ class RecettesManager extends Manager implements RecettesManagerInterface {
         $sql = "SELECT * FROM recettes WHERE recette_de_base = 1";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
+
         $lignes = $stmt->fetchAll();
 
         $recettes = [];
+
         foreach ($lignes as $ligne) {
             $recettes[] = $this->creerRecette($ligne);
         }
@@ -35,13 +37,18 @@ class RecettesManager extends Manager implements RecettesManagerInterface {
     }
 
     public function getRecettesDuCarnet(int $idUtilisateur): array {
-        $sql = "SELECT * FROM recettes WHERE id_utilisateur = :idUtilisateur AND recette_de_base = 0";
+        $sql = "SELECT * FROM recettes
+                WHERE id_utilisateur = :idUtilisateur
+                AND recette_de_base = 0";
+
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(':idUtilisateur', $idUtilisateur);
         $stmt->execute();
+
         $lignes = $stmt->fetchAll();
 
         $recettes = [];
+
         foreach ($lignes as $ligne) {
             $recettes[] = $this->creerRecette($ligne);
         }
@@ -54,6 +61,7 @@ class RecettesManager extends Manager implements RecettesManagerInterface {
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(':id', $id);
         $stmt->execute();
+
         $ligne = $stmt->fetch();
 
         //Si elle n'existe pas
@@ -69,6 +77,7 @@ class RecettesManager extends Manager implements RecettesManagerInterface {
             FROM recettes_ingredients ri
             JOIN ingredients i ON i.id = ri.id_ingredient
             WHERE ri.id_recette = :id";
+
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(':id', $id);
         $stmt->execute();
@@ -80,6 +89,58 @@ class RecettesManager extends Manager implements RecettesManagerInterface {
     }
 
     public function ajouterRecette(Recette $recette): int {
-        return 0;
+        $sql = "INSERT INTO recettes (
+        titre,
+        notes,
+        lien,
+        temps_preparation,
+        nb_personnes,
+        id_utilisateur,
+        id_difficulte
+    ) VALUES (
+        :titre,
+        :notes,
+        :lien,
+        :tempsPreparation,
+        :nbPersonnes,
+        :idUtilisateur,
+        :idDifficulte
+    )";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        $stmt->bindValue(':titre', $recette->getTitre());
+        $stmt->bindValue(':notes', $recette->getNotes());
+        $stmt->bindValue(':lien', $recette->getLien());
+        $stmt->bindValue(':tempsPreparation', $recette->getTempsPreparation());
+        $stmt->bindValue(':nbPersonnes', $recette->getNbPersonnes());
+        $stmt->bindValue(':idUtilisateur', $recette->getIdUtilisateur());
+        $stmt->bindValue(':idDifficulte', $recette->getIdDifficulte());
+
+        $stmt->execute();
+
+        $idRecette = (int) $this->pdo->lastInsertId();
+
+        $sql = "INSERT INTO recettes_ingredients (
+        id_recette,
+        id_ingredient,
+        quantite
+    ) VALUES (
+        :idRecette,
+        :idIngredient,
+        :quantite
+    )";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        foreach ($recette->getIngredients() as $ingredient) {
+            $stmt->bindValue(':idRecette', $idRecette);
+            $stmt->bindValue(':idIngredient', $ingredient['id_ingredient']);
+            $stmt->bindValue(':quantite', $ingredient['quantite']);
+
+            $stmt->execute();
+        }
+
+        return $idRecette;
     }
 }
