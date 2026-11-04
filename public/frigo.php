@@ -5,6 +5,7 @@ require_once __DIR__ . '/../src/constants.php';
 require_once __DIR__ . '/../src/classes/Database.php';
 require_once __DIR__ . '/../src/classes/ProduitsManager.php';
 
+$titrePage = 'Mon frigo';
 $erreur = null;
 $produits = [];
 
@@ -18,39 +19,33 @@ try {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="fr">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon frigo · Rats du Frigo</title>
-</head>
+<?php require __DIR__ . '/../components/head.php'; ?>
 
 <body>
-    <nav>
-        <a href="index.php">Catalogue</a>
-        <a href="frigo.php">Mon frigo</a>
-    </nav>
+    <?php require __DIR__ . '/../components/header.php'; ?>
 
-    <h1>Mon frigo</h1>
+    <main>
+        <h1>Mon frigo</h1>
 
-    <?php if ($erreur !== null) { ?>
-        <p><?= htmlspecialchars($erreur) ?></p>
-    <?php } elseif (count($produits) === 0) { ?>
-        <p>Ton frigo est vide.</p>
-    <?php } ?>
-
-    <ul>
-        <?php foreach ($produits as $produit) { ?>
-            <li>
-                <?= htmlspecialchars($produit->getNomIngredient()) ?>
-                × <?= htmlspecialchars($produit->getQuantite()) ?>
-                — à consommer avant le <?= htmlspecialchars(date('d.m.Y', strtotime($produit->getDatePeremption()))) ?>
-                (<?= htmlspecialchars($produit->getUrgence()) ?>)
-            </li>
+        <?php if ($erreur !== null) { ?>
+            <p><?= htmlspecialchars($erreur) ?></p>
+        <?php } elseif (count($produits) === 0) { ?>
+            <p>Ton frigo est vide.</p>
         <?php } ?>
-    </ul>
+
+        <ul>
+            <?php foreach ($produits as $produit) { ?>
+                <li>
+                    <?= htmlspecialchars($produit->getNomIngredient()) ?>
+                    × <?= htmlspecialchars($produit->getQuantite()) ?>
+                    — à consommer avant le <?= htmlspecialchars(date('d.m.Y', strtotime($produit->getDatePeremption()))) ?>
+                    (<?= htmlspecialchars($produit->getUrgence()) ?>)
+                </li>
+            <?php } ?>
+        </ul>
+    </main>
+
+    <?php require __DIR__ . '/../components/footer.php'; ?>
 </body>
 
 </html>

@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../src/classes/Database.php';
 require_once __DIR__ . '/../src/classes/IngredientsManager.php';
 
+$titrePage = "Catalogue d'ingrédients";
 $erreur = null;
 $ingredients = [];
 
@@ -10,33 +11,31 @@ try {
     $ingredientsManager = new IngredientsManager(new Database());
     $ingredients = $ingredientsManager->getIngredients();
 } catch (Exception $e) {
+    error_log($e->getMessage());
     $erreur = "Le catalogue est indisponible pour le moment.";
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="fr">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rats du Frigo</title>
-</head>
+<?php require __DIR__ . '/../components/head.php'; ?>
 
 <body>
-    <h1>Rats du Frigo</h1>
+    <?php require __DIR__ . '/../components/header.php'; ?>
 
-    <h2>Catalogue d'ingrédients</h2>
+    <main>
+        <h1>Catalogue d'ingrédients</h1>
 
-    <?php if ($erreur !== null) { ?>
-        <p><?= htmlspecialchars($erreur) ?></p>
-    <?php } ?>
-
-    <ul>
-        <?php foreach ($ingredients as $ingredient) { ?>
-            <li><?= htmlspecialchars($ingredient->getNom()) ?> (<?= htmlspecialchars($ingredient->getCategorie()) ?>)</li>
+        <?php if ($erreur !== null) { ?>
+            <p><?= htmlspecialchars($erreur) ?></p>
         <?php } ?>
-    </ul>
+
+        <ul>
+            <?php foreach ($ingredients as $ingredient) { ?>
+                <li><?= htmlspecialchars($ingredient->getNom()) ?> (<?= htmlspecialchars($ingredient->getCategorie()) ?>)</li>
+            <?php } ?>
+        </ul>
+    </main>
+
+    <?php require __DIR__ . '/../components/footer.php'; ?>
 </body>
 
 </html>
