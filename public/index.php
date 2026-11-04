@@ -1,25 +1,17 @@
 <?php
-// Identifiants lus dans config/ (hors de public/, donc invisible depuis le web)
-$config = parse_ini_file(__DIR__ . '/../config/database.ini');
 
-if ($config === false) {
-    die('Fichier config/database.ini manquant : copiez config/database.ini.example.');
+require_once __DIR__ . '/../src/classes/Database.php';
+require_once __DIR__ . '/../src/classes/IngredientsManager.php';
+
+$erreur = null;
+$ingredients = [];
+
+try {
+    $ingredientsManager = new IngredientsManager(new Database());
+    $ingredients = $ingredientsManager->getIngredients();
+} catch (Exception $e) {
+    $erreur = "Le catalogue est indisponible pour le moment.";
 }
-
-$dsn = "mysql:host={$config['host']};port={$config['port']};dbname={$config['database']};charset=utf8mb4";
-
-$pdo = new PDO($dsn, $config['username'], $config['password']);
-
-$sql = "SELECT i.nom, c.libelle AS categorie
-        FROM ingredients i
-        JOIN categories_ingredients c ON c.id = i.id_categorie_ingredient
-        ORDER BY c.libelle, i.nom";
-
-$stmt = $pdo->prepare($sql);
-
-$stmt->execute();
-
-$ingredients = $stmt->fetchAll();
 ?>
 
 <!DOCTYPE html>
@@ -36,9 +28,13 @@ $ingredients = $stmt->fetchAll();
 
     <h2>Catalogue d'ingrédients</h2>
 
+    <?php if ($erreur !== null) { ?>
+        <p><?= htmlspecialchars($erreur) ?></p>
+    <?php } ?>
+
     <ul>
         <?php foreach ($ingredients as $ingredient) { ?>
-            <li><?= htmlspecialchars($ingredient['nom']) ?> (<?= htmlspecialchars($ingredient['categorie']) ?>)</li>
+            <li><?= htmlspecialchars($ingredient->getNom()) ?> (<?= htmlspecialchars($ingredient->getCategorie()) ?>)</li>
         <?php } ?>
     </ul>
 </body>
