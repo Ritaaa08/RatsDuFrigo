@@ -1,5 +1,7 @@
 <?php
-require_once __DIR__ . '/../src/classes/Recette.php';
+require_once __DIR__ . '/../src/classes/Database.php';
+require_once __DIR__ . '/../src/classes/RecettesManager.php';
+require_once __DIR__ . '/../src/constants.php';
 
 $rubriques = [ //suggestion de l'IA pour basculer entre les deux pages qui ont la même organisation. On y donne les valeurs acceptées dans l'URL
     'chef'   => 'Le livre du chef',
