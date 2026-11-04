@@ -10,8 +10,6 @@ $rubriques = [
 
 $rubrique = filter_input(INPUT_GET, 'rubrique') ?? 'chef';
 
-$difficultes = [1 => 'Facile', 2 => 'Moyen', 3 => 'Difficile'];
-
 $erreur = null;
 $recettes = [];
 $titrePage = 'Recettes';
@@ -52,6 +50,7 @@ if (!array_key_exists($rubrique, $rubriques)) {
     </nav>
 
     <h1><?= htmlspecialchars($titrePage) ?></h1>
+    <p><a href="creerRecette.php">Créer une recette</a></p>
 
     <?php if ($erreur !== null) { ?>
         <p><?= htmlspecialchars($erreur) ?></p>
@@ -66,12 +65,11 @@ if (!array_key_exists($rubrique, $rubriques)) {
                     - <?= (int) $recette->getTempsPreparation() ?> min
                 <?php } ?>
                 <?php if ($recette->getIdDifficulte() !== null) { ?>
-                    - <?= htmlspecialchars($difficultes[$recette->getIdDifficulte()] ?? 'Inconnue') ?>
+                    - <?= htmlspecialchars(DIFFICULTES[$recette->getIdDifficulte()] ?? 'Inconnue') ?>
                 <?php } ?>
             </li>
         <?php } ?>
     </ul>
-    <?php ?>
 </body>
 
 </html>

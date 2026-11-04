@@ -1,8 +1,7 @@
 <?php
 require_once __DIR__ . '/../src/classes/Database.php';
 require_once __DIR__ . '/../src/classes/RecettesManager.php';
-
-$difficultes = [1 => 'Facile', 2 => 'Moyen', 3 => 'Difficile'];
+require_once __DIR__ . '/../src/constants.php';
 
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
@@ -16,7 +15,11 @@ if ($id === null || $id === false) {
         $manager = new RecettesManager(new Database());
         $recette = $manager->getRecette($id);
 
-        if ($recette === null) {
+        //recette introuvable, ou carnet d'un autre utilisateur : même message pour ne rien révéler
+        if (
+            $recette === null
+            || (!$recette->getRecetteDeBase() && $recette->getIdUtilisateur() !== ID_UTILISATEUR_DEMO)
+        ) {
             $erreur = "Cette recette n'existe pas.";
         }
     } catch (RuntimeException $e) {
@@ -50,10 +53,12 @@ if ($id === null || $id === false) {
             <p>Pour <?= (int) $recette->getNbPersonnes() ?> personne(s)</p>
         <?php } ?>
 
-        <p>Difficulté : <?= htmlspecialchars($difficultes[$recette->getIdDifficulte()] ?? '') ?></p>
+        <?php if ($recette->getIdDifficulte() !== null) { ?>
+            <p>Difficulté : <?= htmlspecialchars(DIFFICULTES[$recette->getIdDifficulte()] ?? '') ?></p>
+        <?php } ?>
 
         <?php if ($recette->getNotes() !== null) { ?>
-            <p><?= htmlspecialchars($recette->getNotes()) ?></p>
+            <p><?= nl2br(htmlspecialchars($recette->getNotes())) ?></p>
         <?php } ?>
 
         <?php if ($recette->getLien() !== null) { ?>

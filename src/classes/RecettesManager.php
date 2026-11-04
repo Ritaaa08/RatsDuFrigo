@@ -19,6 +19,9 @@ class RecettesManager extends Manager implements RecettesManagerInterface {
             $ligne['date_creation'],
             $ligne['id']
         );
+        $recette->setRecetteDeBase((bool) $ligne['recette_de_base']);
+
+        return $recette;
     }
 
     public function getRecettesDuChef(): array {
@@ -89,58 +92,67 @@ class RecettesManager extends Manager implements RecettesManagerInterface {
     }
 
     public function ajouterRecette(Recette $recette): int {
-        $sql = "INSERT INTO recettes (
-        titre,
-        notes,
-        lien,
-        temps_preparation,
-        nb_personnes,
-        id_utilisateur,
-        id_difficulte
-    ) VALUES (
-        :titre,
-        :notes,
-        :lien,
-        :tempsPreparation,
-        :nbPersonnes,
-        :idUtilisateur,
-        :idDifficulte
-    )";
+        $this->pdo->beginTransaction(); //on démarre : rien n'est définitif pour l'instant
 
-        $stmt = $this->pdo->prepare($sql);
+        try {
+            $sql = "INSERT INTO recettes (
+                titre,
+                notes,
+                lien,
+                temps_preparation,
+                nb_personnes,
+                id_utilisateur,
+                id_difficulte
+            ) VALUES (
+                :titre,
+                :notes,
+                :lien,
+                :tempsPreparation,
+                :nbPersonnes,
+                :idUtilisateur,
+                :idDifficulte
+            )";
 
-        $stmt->bindValue(':titre', $recette->getTitre());
-        $stmt->bindValue(':notes', $recette->getNotes());
-        $stmt->bindValue(':lien', $recette->getLien());
-        $stmt->bindValue(':tempsPreparation', $recette->getTempsPreparation());
-        $stmt->bindValue(':nbPersonnes', $recette->getNbPersonnes());
-        $stmt->bindValue(':idUtilisateur', $recette->getIdUtilisateur());
-        $stmt->bindValue(':idDifficulte', $recette->getIdDifficulte());
+            $stmt = $this->pdo->prepare($sql);
 
-        $stmt->execute();
-
-        $idRecette = (int) $this->pdo->lastInsertId();
-
-        $sql = "INSERT INTO recettes_ingredients (
-        id_recette,
-        id_ingredient,
-        quantite
-    ) VALUES (
-        :idRecette,
-        :idIngredient,
-        :quantite
-    )";
-
-        $stmt = $this->pdo->prepare($sql);
-
-        foreach ($recette->getIngredients() as $ingredient) {
-            $stmt->bindValue(':idRecette', $idRecette);
-            $stmt->bindValue(':idIngredient', $ingredient['id_ingredient']);
-            $stmt->bindValue(':quantite', $ingredient['quantite']);
+            $stmt->bindValue(':titre', $recette->getTitre());
+            $stmt->bindValue(':notes', $recette->getNotes());
+            $stmt->bindValue(':lien', $recette->getLien());
+            $stmt->bindValue(':tempsPreparation', $recette->getTempsPreparation());
+            $stmt->bindValue(':nbPersonnes', $recette->getNbPersonnes());
+            $stmt->bindValue(':idUtilisateur', $recette->getIdUtilisateur());
+            $stmt->bindValue(':idDifficulte', $recette->getIdDifficulte());
 
             $stmt->execute();
-        }
 
-        return $idRecette;
+            $idRecette = (int) $this->pdo->lastInsertId();
+
+            $sql = "INSERT INTO recettes_ingredients (
+                id_recette,
+                id_ingredient,
+                quantite
+            ) VALUES (
+                :idRecette,
+                :idIngredient,
+                :quantite
+            )";
+
+            $stmt = $this->pdo->prepare($sql);
+
+            foreach ($recette->getIngredients() as $ingredient) {
+                $stmt->bindValue(':idRecette', $idRecette);
+                $stmt->bindValue(':idIngredient', $ingredient['id_ingredient']);
+                $stmt->bindValue(':quantite', $ingredient['quantite']);
+
+                $stmt->execute();
+            }
+
+            $this->pdo->commit(); //tout s'est bien passé : on enregistre pour de bon
+
+            return $idRecette;
+        } catch (PDOException $e) {
+            $this->pdo->rollBack(); //problème : on annule tout, la recette n'est pas gardée à moitié
+            throw $e;               //on relance l'erreur : les pages l'attrapent déjà (PDOException est une RuntimeException)
+        }
     }
 }

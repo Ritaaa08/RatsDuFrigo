@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../src/constants.php';
 require_once __DIR__ . '/../src/classes/Database.php';
 require_once __DIR__ . '/../src/classes/RecettesManager.php';
+//require_once __DIR__ . '/../src/classes/IngredientsManager.php';
 
 $erreurs = [];
 
@@ -93,7 +94,7 @@ try {
         </ul>
     <?php } ?>
 
-    <form action="creer-recette.php" method="POST">
+    <form action="creerRecette.php" method="POST">
         <label for="titre">Titre</label><br>
         <input type="text" id="titre" name="titre" maxlength="50" value="<?= htmlspecialchars($titre) ?>"><br>
 
@@ -112,9 +113,9 @@ try {
         <label for="difficulte">Difficulté</label><br>
         <select id="difficulte" name="difficulte">
             <option value="">-</option>
-            <option value="1" <?= $difficulte === '1' ? 'selected' : '' ?>>Facile</option>
-            <option value="2" <?= $difficulte === '2' ? 'selected' : '' ?>>Moyen</option>
-            <option value="3" <?= $difficulte === '3' ? 'selected' : '' ?>>Difficile</option>
+            <?php foreach (DIFFICULTES as $idDifficulte => $libelle) { ?>
+                <option value="<?= $idDifficulte ?>" <?= $difficulte === (string) $idDifficulte ? 'selected' : '' ?>><?= htmlspecialchars($libelle) ?></option>
+            <?php } ?>
         </select><br>
 
         <h2>Ingrédients</h2> <!--suggestion de l'IA-->

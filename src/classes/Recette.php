@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../constants.php';
 
 class Recette {
     private ?int $id;
@@ -11,6 +12,7 @@ class Recette {
     private ?string $dateCreation;
     private int $idUtilisateur;
     private array $ingredients = [];
+    private bool $recetteDeBase = false;
 
     public function __construct(
         string $titre,
@@ -67,6 +69,10 @@ class Recette {
         return $this->ingredients;
     }
 
+    public function getRecetteDeBase(): bool {
+        return $this->recetteDeBase;
+    }
+
     //----------------------------- SETTERS -----------------------------
     //On en met seulement sur les éléments qui peuvent potentiellement changer après la création
 
@@ -90,6 +96,10 @@ class Recette {
     }
     public function setIngredients(array $ingredients): void {
         $this->ingredients = $ingredients;
+    }
+
+    public function setRecetteDeBase(bool $recetteDeBase): void {
+        $this->recetteDeBase = $recetteDeBase;
     }
 
     //----------------------------- VALIDATION -----------------------------
@@ -139,7 +149,7 @@ class Recette {
         }
 
         //difficulté
-        if ($this->idDifficulte !== null && !in_array($this->idDifficulte, [1, 2, 3], true)) {
+        if ($this->idDifficulte !== null && !array_key_exists($this->idDifficulte, DIFFICULTES)) {
             $erreurs[] = "La difficulté choisie n'existe pas.";
         }
 
