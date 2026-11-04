@@ -154,4 +154,16 @@ class RecettesManager extends Manager implements RecettesManagerInterface {
             throw $e;
         }
     }
+
+    public function supprimerRecette(int $id, int $idUtilisateur): bool {
+        $sql = "DELETE FROM recettes
+            WHERE id = :id AND id_utilisateur = :idUtilisateur AND recette_de_base = 0";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':idUtilisateur', $idUtilisateur, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->rowCount() > 0;
+    }
 }

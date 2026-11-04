@@ -60,11 +60,20 @@ if (!array_key_exists($rubrique, $rubriques)) {
                     <a href="recette.php?id=<?= (int) $recette->getId() ?>">
                         <?= htmlspecialchars($recette->getTitre()) ?>
                     </a>
+
                     <?php if ($recette->getTempsPreparation() !== null) { ?>
                         - <?= (int) $recette->getTempsPreparation() ?> min
                     <?php } ?>
+
                     <?php if ($recette->getIdDifficulte() !== null) { ?>
                         - <?= htmlspecialchars(DIFFICULTES[$recette->getIdDifficulte()] ?? 'Inconnue') ?>
+                    <?php } ?>
+
+                    <?php if ($rubrique === 'carnet') { ?>
+                        <form action="supprimer-recette.php" method="POST">
+                            <input type="hidden" name="id" value="<?= (int) $recette->getId() ?>">
+                            <button type="submit">Supprimer</button>
+                        </form>
                     <?php } ?>
                 </li>
             <?php } ?>
