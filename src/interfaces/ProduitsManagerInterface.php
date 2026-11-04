@@ -1,4 +1,3 @@
-
 <?php
 //le contrat du manager
 
