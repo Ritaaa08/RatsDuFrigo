@@ -70,7 +70,7 @@ if (!array_key_exists($rubrique, $rubriques)) {
                     <?php } ?>
 
                     <?php if ($rubrique === 'carnet') { ?>
-                        <form action="supprimer-recette.php" method="POST">
+                        <form action="supprimerRecette.php" method="POST">
                             <input type="hidden" name="id" value="<?= (int) $recette->getId() ?>">
                             <button type="submit">Supprimer</button>
                         </form>
