@@ -71,7 +71,7 @@ if (!array_key_exists($rubrique, $rubriques)) {
         </ul>
     </main>
 
-    <?php require __DIR__ . '/../src/components/footer.php'; ?>
+    <?php require __DIR__ . '/../components/footer.php'; ?>
 </body>
 
 </html>

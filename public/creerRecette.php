@@ -141,7 +141,7 @@ try {
         <p><a href="recettes.php?rubrique=carnet">Retour au carnet</a></p>
     </main>
 
-    <?php require __DIR__ . '/../src/components/footer.php'; ?>
+    <?php require __DIR__ . '/../components/footer.php'; ?>
 </body>
 
 </html>
