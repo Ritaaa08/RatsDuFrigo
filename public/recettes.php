@@ -1,38 +1,37 @@
 <?php
+require_once __DIR__ . '/../src/constants.php';
 require_once __DIR__ . '/../src/classes/Database.php';
 require_once __DIR__ . '/../src/classes/RecettesManager.php';
-require_once __DIR__ . '/../src/constants.php';
 
-$rubriques = [ //suggestion de l'IA pour basculer entre les deux pages qui ont la même organisation. On y donne les valeurs acceptées dans l'URL
+$rubriques = [
     'chef'   => 'Le livre du chef',
     'carnet' => 'Mon carnet',
 ];
 
-$rubrique = filter_input(INPUT_GET, 'rubrique') ?? 'chef'; //rubrique livre du chef par défaut
+$rubrique = filter_input(INPUT_GET, 'rubrique') ?? 'chef';
 
-$difficultes = [1 => 'Facile', 2 => 'Moyen', 3 => 'Difficile']; //temporaire : pas encore de manager
+$difficultes = [1 => 'Facile', 2 => 'Moyen', 3 => 'Difficile'];
 
 $erreur = null;
 $recettes = [];
 $titrePage = 'Recettes';
 
-if (!array_key_exists($rubrique, $rubriques)) { //suggestion IA -> vérifier si la rubrique existe dans le tableau précédent 
+if (!array_key_exists($rubrique, $rubriques)) {
     $erreur = "Cette rubrique n'existe pas.";
 } else {
     $titrePage = $rubriques[$rubrique];
 
-    if ($rubrique === 'chef') {
-        //données de test
-        $recettes = [
-            new Recette('Pâtes tomate', 1, 'Cuire les pâtes...', null, 20, 2, 1, null, 1),
-            new Recette('Pâtes pesto', 1, 'Cuire les pâtes...', null, 10, 3, 2, null, 2),
-            new Recette('Pâtes carbonara', 1, 'Cuire les pâtes...', null, 30, 1, 3, null, 3),
-        ];
-    } else {
-        $recettes = [
-            new Recette('Gratin de courgettes', 2, 'Mes notes...', null, 45, 4, 2, null, 4),
-            new Recette('Soupe de potiron', 2, null, 'https://exemple.ch/soupe', null, 2, 1, null, 5),
-        ];
+    try {
+        $manager = new RecettesManager(new Database());
+
+        if ($rubrique === 'chef') {
+            $recettes = $manager->getRecettesDuChef();
+        } else {
+            $recettes = $manager->getRecettesDuCarnet(ID_UTILISATEUR_DEMO);
+        }
+    } catch (RuntimeException $e) {
+        error_log($e->getMessage());
+        $erreur = "Une erreur est survenue. Réessayez plus tard.";
     }
 }
 ?>

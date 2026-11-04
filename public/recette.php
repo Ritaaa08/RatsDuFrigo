@@ -1,23 +1,9 @@
 <?php
-require_once __DIR__ . '/../src/classes/Recette.php';
+require_once __DIR__ . '/../src/classes/Database.php';
+require_once __DIR__ . '/../src/classes/RecettesManager.php';
 
 $difficultes = [1 => 'Facile', 2 => 'Moyen', 3 => 'Difficile'];
 
-//Données de test
-$pates = new Recette('Pâtes tomate', 1, 'Cuire les pâtes...', null, 20, 2, 1, null, 1);
-$pates->setIngredients([
-    ['id_ingredient' => 1, 'nom' => 'Pâtes', 'quantite' => '200 g'],
-    ['id_ingredient' => 2, 'nom' => 'Tomate', 'quantite' => '3'],
-]);
-
-$soupe = new Recette('Soupe de potiron', 2, null, 'https://exemple.ch/soupe', null, 2, 1, null, 5);
-$soupe->setIngredients([
-    ['id_ingredient' => 3, 'nom' => 'Potiron', 'quantite' => null],
-]);
-
-$toutes = [1 => $pates, 5 => $soupe];
-
-//Voir l'id dans l'URL
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
 $erreur = null;
@@ -25,10 +11,18 @@ $recette = null;
 
 if ($id === null || $id === false) {
     $erreur = "Recette invalide.";
-} elseif (!array_key_exists($id, $toutes)) {
-    $erreur = "Cette recette n'existe pas.";
 } else {
-    $recette = $toutes[$id];
+    try {
+        $manager = new RecettesManager(new Database());
+        $recette = $manager->getRecette($id);
+
+        if ($recette === null) {
+            $erreur = "Cette recette n'existe pas.";
+        }
+    } catch (RuntimeException $e) {
+        error_log($e->getMessage());
+        $erreur = "Une erreur est survenue. Réessayez plus tard.";
+    }
 }
 ?>
 
