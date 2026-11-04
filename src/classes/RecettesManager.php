@@ -8,7 +8,7 @@ class RecettesManager extends Manager implements RecettesManagerInterface {
 
     //transformer ligne bdd en objet Recette
     private function creerRecette(array $ligne): Recette {
-        return new Recette(
+        $recette = new Recette(
             $ligne['titre'],
             $ligne['id_utilisateur'],
             $ligne['notes'],
@@ -92,7 +92,7 @@ class RecettesManager extends Manager implements RecettesManagerInterface {
     }
 
     public function ajouterRecette(Recette $recette): int {
-        $this->pdo->beginTransaction(); //on démarre : rien n'est définitif pour l'instant
+        $this->pdo->beginTransaction();
 
         try {
             $sql = "INSERT INTO recettes (
@@ -147,12 +147,11 @@ class RecettesManager extends Manager implements RecettesManagerInterface {
                 $stmt->execute();
             }
 
-            $this->pdo->commit(); //tout s'est bien passé : on enregistre pour de bon
-
+            $this->pdo->commit();
             return $idRecette;
         } catch (PDOException $e) {
-            $this->pdo->rollBack(); //problème : on annule tout, la recette n'est pas gardée à moitié
-            throw $e;               //on relance l'erreur : les pages l'attrapent déjà (PDOException est une RuntimeException)
+            $this->pdo->rollBack();
+            throw $e;
         }
     }
 }

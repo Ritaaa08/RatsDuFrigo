@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../src/constants.php';
 require_once __DIR__ . '/../src/classes/Database.php';
 require_once __DIR__ . '/../src/classes/RecettesManager.php';
-//require_once __DIR__ . '/../src/classes/IngredientsManager.php';
+require_once __DIR__ . '/../src/classes/IngredientsManager.php';
 
 $erreurs = [];
 
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 //menu déroulant de la liste d'ingrédients
 $listeIngredients = [];
 try {
-    //$listeIngredients = (new IngredientsManager(new Database()))->getIngredients();
+    $listeIngredients = (new IngredientsManager(new Database()))->getIngredients();
 } catch (RuntimeException $e) {
     error_log($e->getMessage());
 }
