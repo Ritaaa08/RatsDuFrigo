@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/ValidationException.php';
+
 class Produit {
     // id du statut « au frigo » dans la table statuts_produit
     public const STATUT_DANS_FRIGO = 1;
@@ -11,6 +13,21 @@ class Produit {
     private string $datePeremption;
 
     public function __construct(int $idIngredient, int $quantite, string $datePeremption, ?string $nomIngredient = null, ?int $id = null) {
+        $erreurs = [];
+
+        if ($quantite < 1 || $quantite > 999) {
+            $erreurs[] = "La quantité doit être comprise entre 1 et 999.";
+        }
+
+        $date = DateTime::createFromFormat('Y-m-d', $datePeremption);
+        if ($date === false || $date->format('Y-m-d') !== $datePeremption) {
+            $erreurs[] = "La date de péremption n'est pas valide.";
+        }
+
+        if (count($erreurs) > 0) {
+            throw new ValidationException($erreurs);
+        }
+
         $this->idIngredient = $idIngredient;
         $this->quantite = $quantite;
         $this->datePeremption = $datePeremption;
@@ -59,20 +76,5 @@ class Produit {
             return 'bientôt';
         }
         return 'OK';
-    }
-
-    public function valider(): array {
-        $erreurs = [];
-
-        if ($this->quantite < 1 || $this->quantite > 999) {
-            $erreurs[] = "La quantité doit être comprise entre 1 et 999.";
-        }
-
-        $date = DateTime::createFromFormat('Y-m-d', $this->datePeremption);
-        if ($date === false || $date->format('Y-m-d') !== $this->datePeremption) {
-            $erreurs[] = "La date de péremption n'est pas valide.";
-        }
-
-        return $erreurs;
     }
 }

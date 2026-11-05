@@ -29,8 +29,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && count($erreurs) === 0) {
     $quantite = trim((string) filter_input(INPUT_POST, 'quantite'));
     $datePeremption = trim((string) filter_input(INPUT_POST, 'date_peremption'));
 
-    $produit = new Produit((int) $idIngredient, (int) $quantite, $datePeremption);
-    $erreurs = $produit->valider();
+    try {
+        $produit = new Produit((int) $idIngredient, (int) $quantite, $datePeremption);
+    } catch (ValidationException $e) {
+        $erreurs = $e->getErreurs();
+    }
 
     // L'ingrédient doit exister dans la base
     $idsExistants = [];

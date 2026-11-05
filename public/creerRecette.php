@@ -47,22 +47,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    //création de recette
-    $recette = new Recette($titre, ID_UTILISATEUR_DEMO, $notesBdd, $lienBdd, $tempsBdd, $personnesBdd, $difficulteBdd);
-    $recette->setIngredients($ingredients);
-    $erreurs = $recette->valider();
+    try {
+        //création de recette
+        $recette = new Recette($titre, ID_UTILISATEUR_DEMO, $notesBdd, $lienBdd, $tempsBdd, $personnesBdd, $difficulteBdd);
+        $recette->setIngredients($ingredients);
 
-    //enregistrement de la recette
-    if (empty($erreurs)) {
-        try {
-            $manager = new RecettesManager(new Database());
-            $idNouvelle = $manager->ajouterRecette($recette);
-            header('Location: recette.php?id=' . $idNouvelle);
-            exit;
-        } catch (RuntimeException $e) {
-            error_log($e->getMessage());
-            $erreurs[] = "Une erreur est survenue. Réessayez plus tard.";
-        }
+        //enregistrement de la recette
+        $manager = new RecettesManager(new Database());
+        $idNouvelle = $manager->ajouterRecette($recette);
+        header('Location: recette.php?id=' . $idNouvelle);
+        exit;
+    } catch (ValidationException $e) {
+        $erreurs = $e->getErreurs();
+    } catch (RuntimeException $e) {
+        error_log($e->getMessage());
+        $erreurs[] = "Une erreur est survenue. Réessayez plus tard.";
     }
 }
 
