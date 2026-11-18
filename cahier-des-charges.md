@@ -87,13 +87,29 @@ comme mascotte. C'est un clin d'œil au film _Ratatouille_.
 6. **Pour chaque suggestion de recette** : les produits qu'elle permet de sauver
    et les ingrédients qui manquent
 
-
-## Usage de l' IA
 ## Utilisation de l'IA
 
 Nous avons utilisé **Claude Code (Anthropic)** pour :
-- nous aider à nous souvenir comment créer le MLD et le MPD de la base de données en demandant des explications sur des notions pas vu ou oublié ;
-- aider à écrire les scripts SQL du dossier `src/db/` surtout pour les données de test et les requêtes de test.
+
+- nous aider à nous souvenir comment créer le MLD et le MPD de la base de
+  données en demandant des explications sur des notions pas vues ou oubliées ;
+- aider à écrire les scripts SQL du dossier `src/db/` surtout pour les données
+  de test et les requêtes de test.
+
+Pour les séances 5 à 7, nous l'avons aussi utilisé pour :
+
+- nous expliquer la POO (classes, managers, interfaces) et nous aider à
+  organiser nos classes ;
+- proposer du code pour certaines parties, par exemple les composants communs
+  (head, header, footer) et l'ajout et suppression de produits dans le frigo ;
+- relire notre code, trouver des bugs et nous expliquer comment le code
+  fonctionne et comment on peut corriger les bugs (étape par étape) ;
+- après les remarques du prof, nous aider à déplacer la validation dans les
+  constructeurs ;
+- vérifier la sécurité de l'application (injections SQL, XSS, affichage des
+  erreurs) et proposer des corrections ;
+- tester les pages et nous guider pour Git (branches, pull requests) quand on a
+  eu des difficultés.
 
 Ce qui a été généré par l'IA a été testé, vérifié et corrigé par le groupe.
 
