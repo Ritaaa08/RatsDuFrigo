@@ -144,6 +144,11 @@ class Recette {
                 break;
             }
             $dejaVus[] = $id; //Si ce n'est pas le cas on ajoute l'ingrédient dans la liste des déjà-vus
+
+            if ($ingredient['quantite'] !== null && mb_strlen($ingredient['quantite']) > 30) {
+                $erreurs[] = "La quantité ne peut pas dépasser 30 caractères.";
+                break;
+            }
         }
 
         if (count($erreurs) > 0) {

@@ -1,5 +1,6 @@
 <?php
 
+require_once __DIR__ . '/../src/errors.php';
 require_once __DIR__ . '/../src/constants.php';
 require_once __DIR__ . '/../src/classes/Database.php';
 require_once __DIR__ . '/../src/classes/IngredientsManager.php';

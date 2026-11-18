@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../src/errors.php';
 require_once __DIR__ . '/../src/constants.php';
 require_once __DIR__ . '/../src/classes/Database.php';
 require_once __DIR__ . '/../src/classes/RecettesManager.php';
@@ -27,6 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $difficulte = trim((string) filter_input(INPUT_POST, 'difficulte'));
     $idsIngredients = filter_input(INPUT_POST, 'id_ingredient', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY) ?: [];
     $quantites = filter_input(INPUT_POST, 'quantite', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY) ?: [];
+    $idsIngredients = array_filter($idsIngredients, 'is_string');
+    $quantites = array_filter($quantites, 'is_string');
 
     //gestion des champs vides
     $notesBdd = $notes === '' ? null : $notes;
